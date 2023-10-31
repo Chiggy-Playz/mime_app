@@ -1,0 +1,13 @@
+name: downloads_repository
+description: Dart package which manages the downloads domain.
+publish_to: none
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  dio: ^5.3.3
+  assets_repository:
+    path: ../assets_repository
+  fast_image_resizer: ^0.0.2
+  flutter_image_compress: ^2.1.0
