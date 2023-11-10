@@ -44,6 +44,10 @@ class DownloadsRepository {
     List<Asset> assets,
     Directory directory,
   ) async {
+
+    if (assets.isEmpty) return;
+
+    // Downloads assets in webp form for emojis and png for stickers
     await downloadMultipleFiles(
       assets.asMap().map(
             (key, asset) => MapEntry(asset.url, asset.file(directory).path),
@@ -52,7 +56,7 @@ class DownloadsRepository {
 
     // Once the the assets are downloaded, size them to 512x512 and save them as webp
     for (var asset in assets) {
-      final imageBytes = await asset.file(directory, compressed: false).readAsBytes();
+      final imageBytes = await asset.file(directory).readAsBytes();
 
       final bytes = await resizeImage(imageBytes, width: 512, height: 512);
 
