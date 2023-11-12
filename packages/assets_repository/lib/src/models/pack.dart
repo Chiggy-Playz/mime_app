@@ -29,6 +29,8 @@ class RawPack extends Equatable {
         "identifier": identifier,
       };
 
+  bool get isUnassigned => packId == 0;
+
   @override
   List<Object?> get props => [packId];
 }
