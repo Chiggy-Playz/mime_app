@@ -26,6 +26,13 @@ class _HomePageState extends State<HomePage> {
       userId: 0,
       assets: List.generate(10, (index) => Asset.empty),
     ): false,
+    Pack(
+      identifier: "\$dummmy pack for loading\$",
+      name: "dummmy pack for loading",
+      packId: 0,
+      userId: 0,
+      assets: List.generate(14, (index) => Asset.empty),
+    ): false,
   };
 
   @override
@@ -39,9 +46,11 @@ class _HomePageState extends State<HomePage> {
         if (state is HomePageLoading) {
           userAvatarUrl = state.userAvatarUrl;
           packsLoaded = {
-            state.unassignedAssetsPack: false,
+            if (state.unassignedAssetsPack.assets.isNotEmpty)
+              state.unassignedAssetsPack: false,
             ...state.packs.asMap().map((key, value) => MapEntry(value, false)),
           };
+          '';
         } else if (state is HomePageStickerPackLoaded) {
           packsLoaded[state.loadedPack] = true;
         }
@@ -69,24 +78,17 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Check if its initial loading, which means we dont even know how many packs there are
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
-                child: Column(
-                  children: [StickerPackListWidget(packsLoaded: packsLoaded)],
-                ),
-              ),
-            ), // true  ? skeletalView() : const Center(child: Text("Home")),
+            body: StickerPackListWidget(
+                packsLoaded:
+                    packsLoaded), // true  ? skeletalView() : const Center(child: Text("Home")),
             floatingActionButton: Skeleton.keep(
               child: FloatingActionButton(
                 onPressed: () async {
-
                   // Clear all files in cache dir
                   final cacheDir = await getApplicationCacheDirectory();
                   for (var file in cacheDir.listSync()) {
                     await file.delete();
-                  }                  
-
+                  }
                 },
                 child: const Icon(Icons.logout),
               ),
@@ -94,61 +96,6 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       },
-    );
-  }
-
-  Widget skeletalView() {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
-        child: Column(
-          children: [
-            const Text("Ooga Booga"),
-            ListTileTheme(
-              contentPadding: const EdgeInsets.all(0),
-              dense: true,
-              horizontalTitleGap: 0.0,
-              minVerticalPadding: 0,
-              minLeadingWidth: 0,
-              child: ExpansionPanelList(
-                children: [
-                  ExpansionPanel(
-                    isExpanded: true,
-                    canTapOnHeader: true,
-                    headerBuilder: (context, isExpanded) {
-                      return ListTile(
-                        title: Text(
-                          "Sticker Pack Name",
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      );
-                    },
-                    body: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 2.h),
-                      child: GridView.count(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 2.w,
-                        mainAxisSpacing: 2.h,
-                        children: [
-                          for (var i = 0; i < 10; i++)
-                            Skeleton.replace(
-                              height: 18.w,
-                              width: 18.w,
-                              replacement: const Skeleton.shade(child: Card()),
-                              child: const Placeholder(),
-                            )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

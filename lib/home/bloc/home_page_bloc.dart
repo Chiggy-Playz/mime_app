@@ -46,7 +46,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     // Find the assets that are not downloaded
     // Download them
     // Once downloaded, emit a state
-    for (var pack in [unassignedAssets, ...packs]) {
+    for (var pack in [if (unassignedAssets.assets.isNotEmpty) unassignedAssets, ...packs]) {
       var assetsToDownload = <Asset>[];
 
       for (final asset in pack.assets) {
@@ -63,6 +63,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       emit(HomePageStickerPackLoaded(pack));
     }
+
+    
 
     // Once all of them are downloaded, emit a final state
     emit(HomePageLoaded());

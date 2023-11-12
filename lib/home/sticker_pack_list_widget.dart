@@ -1,5 +1,6 @@
 import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:mime_app/core/widgets/empty_widget.dart';
 import 'package:mime_app/home/sticker_pack_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -30,6 +31,14 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> expansionTiles = [];
+
+    if (widget.packs.isEmpty) {
+      return const EmptyWidget(
+          title: "No stickers yet",
+          icon: Icons.image_not_supported,
+          description:
+              "You don't have any stickers yet. Get started by creating a new pack or importing from discord!");
+    }
 
     for (var pack in widget.packs) {
       expansionTiles.add(
@@ -67,21 +76,25 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
       );
     }
 
-    return ListTileTheme(
-      contentPadding: const EdgeInsets.all(0),
-      dense: true,
-      horizontalTitleGap: 0.0,
-      minVerticalPadding: 0,
-      minLeadingWidth: 0,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        key: UniqueKey(),
-        itemCount: widget.packs.length,
-        itemBuilder: (context, index) {
-          return expansionTiles[index];
-        },
-      ),
+    return SingleChildScrollView(
+      child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+          child: ListTileTheme(
+            contentPadding: const EdgeInsets.all(0),
+            dense: true,
+            horizontalTitleGap: 0.0,
+            minVerticalPadding: 0,
+            minLeadingWidth: 0,
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              key: UniqueKey(),
+              itemCount: widget.packs.length,
+              itemBuilder: (context, index) {
+                return expansionTiles[index];
+              },
+            ),
+          )),
     );
   }
 }
