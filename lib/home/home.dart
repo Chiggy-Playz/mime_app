@@ -78,9 +78,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             // Check if its initial loading, which means we dont even know how many packs there are
-            body: StickerPackListWidget(
-                packsLoaded:
-                    packsLoaded), // true  ? skeletalView() : const Center(child: Text("Home")),
+            body: StickerPackListWidget(packsLoaded: packsLoaded),
             floatingActionButton: Skeleton.keep(
               child: FloatingActionButton(
                 onPressed: () async {

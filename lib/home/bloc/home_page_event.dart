@@ -9,3 +9,4 @@ sealed class HomePageEvent extends Equatable {
 
 final class HomePageStarted extends HomePageEvent {}
 
+final class HomePageRefreshed extends HomePageEvent {}

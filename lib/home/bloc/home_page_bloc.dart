@@ -22,13 +22,15 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         _downloadsRepository = downloadsRepository,
         super(HomePageInitial()) {
     // Event handler
-    initialLoad(HomePageStarted(), emit);
+    load(HomePageStarted(), emit);
+    on<HomePageRefreshed>(load);
   }
 
-  Future<void> initialLoad(event, emit) async {
+  Future<void> load(event, emit) async {
     final user = await _userRepository.getUser();
-    final unassignedAssets = await _assetsRepository.getUnassignedPack(user!);
-    final packs = await _assetsRepository.getPacks(user);
+    final unassignedAssets =
+        await _assetsRepository.getUnassignedPack(user!, true);
+    final packs = await _assetsRepository.getPacks(user, true);
 
     // To shimmer exact number of packs
     emit(HomePageLoading(
@@ -46,7 +48,10 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     // Find the assets that are not downloaded
     // Download them
     // Once downloaded, emit a state
-    for (var pack in [if (unassignedAssets.assets.isNotEmpty) unassignedAssets, ...packs]) {
+    for (var pack in [
+      if (unassignedAssets.assets.isNotEmpty) unassignedAssets,
+      ...packs
+    ]) {
       var assetsToDownload = <Asset>[];
 
       for (final asset in pack.assets) {
@@ -56,16 +61,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         }
       }
 
-      await _downloadsRepository.downloadAssets( 
+      await _downloadsRepository.downloadAssets(
         assetsToDownload,
-        cacheDir,        
+        cacheDir,
       );
 
       emit(HomePageStickerPackLoaded(pack));
     }
-
-    
-
     // Once all of them are downloaded, emit a final state
     emit(HomePageLoaded());
   }

@@ -70,7 +70,6 @@ class DownloadsRepository {
       await asset
           .file(directory)
           .writeAsBytes(result, flush: true);
-      await asset.file(directory).delete();
     }
   }
 }

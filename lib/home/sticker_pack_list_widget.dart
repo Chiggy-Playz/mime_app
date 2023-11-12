@@ -1,9 +1,12 @@
 import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/core/widgets/empty_widget.dart';
 import 'package:mime_app/home/sticker_pack_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import 'bloc/home_page_bloc.dart';
 
 class StickerPackListWidget extends StatefulWidget {
   const StickerPackListWidget({super.key, required this.packsLoaded});
@@ -31,14 +34,6 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
   @override
   Widget build(BuildContext context) {
     List<Widget> expansionTiles = [];
-
-    if (widget.packs.isEmpty) {
-      return const EmptyWidget(
-          title: "No stickers yet",
-          icon: Icons.image_not_supported,
-          description:
-              "You don't have any stickers yet. Get started by creating a new pack or importing from discord!");
-    }
 
     for (var pack in widget.packs) {
       expansionTiles.add(
@@ -76,7 +71,12 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
       );
     }
 
-    return SingleChildScrollView(
+    return RefreshIndicator(
+      onRefresh: () async {
+        BlocProvider.of<HomePageBloc>(context).add(
+          HomePageRefreshed(),
+        );
+      },
       child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
           child: ListTileTheme(
@@ -85,15 +85,27 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
             horizontalTitleGap: 0.0,
             minVerticalPadding: 0,
             minLeadingWidth: 0,
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              key: UniqueKey(),
-              itemCount: widget.packs.length,
-              itemBuilder: (context, index) {
-                return expansionTiles[index];
-              },
-            ),
+            child: widget.packs.isEmpty
+                ? const CustomScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                        SliverFillRemaining(
+                          child: EmptyWidget(
+                              title: "No stickers yet",
+                              icon: Icons.image_not_supported,
+                              description:
+                                  "You don't have any stickers yet. Get started by creating a new pack or importing from discord!"),
+                        ),
+                      ])
+                : ListView.builder(
+                    primary: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    key: UniqueKey(),
+                    itemCount: widget.packs.length,
+                    itemBuilder: (context, index) {
+                      return expansionTiles[index];
+                    },
+                  ),
           )),
     );
   }
