@@ -5,7 +5,6 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:mime_app/core/extensions/build_context_extensions.dart';
 import 'package:mime_app/home/bloc/home_page_bloc.dart';
 import 'package:mime_app/home/sticker_pack_list_widget.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -36,6 +35,12 @@ class _HomePageState extends State<HomePage> {
       assets: List.generate(14, (index) => Asset.empty),
     ): false,
   };
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomePageBloc>().add(HomePageStarted());
+  }
 
   @override
   Widget build(BuildContext context) {

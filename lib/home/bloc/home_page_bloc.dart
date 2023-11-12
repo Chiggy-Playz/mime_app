@@ -22,7 +22,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         _downloadsRepository = downloadsRepository,
         super(HomePageInitial()) {
     // Event handler
-    load(HomePageStarted(), emit);
+    on<HomePageStarted>(load);
     on<HomePageRefreshed>(load);
   }
 
