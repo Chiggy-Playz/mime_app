@@ -2,6 +2,7 @@ import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/core/widgets/empty_widget.dart';
+import 'package:mime_app/detailed_view/presentation/screens/pack_details_screen.dart';
 import 'package:mime_app/home/sticker_pack_preview_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -44,7 +45,9 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
           clipBehavior: Clip.antiAlias,
           elevation: 8,
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(PackDetailsScreen.route(pack));
+            },
             child: Column(
               children: [
                 ListTile(

@@ -3,6 +3,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:downloads_repository/downloads_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mime_app/detailed_view/presentation/bloc/pack_details_bloc.dart';
 import 'package:mime_app/home/bloc/home_page_bloc.dart';
 import 'package:mime_app/login/login.dart';
 import 'package:mime_app/splash.dart';
@@ -60,11 +61,13 @@ class _MimeAppState extends State<MimeApp> {
             ),
           ),
           BlocProvider(
-              create: (_) => HomePageBloc(
-                    userRepository: _userRepository,
-                    assetsRepository: _assetsRepository,
-                    downloadsRepository: _downloadsRepository,
-                  )),
+            create: (_) => HomePageBloc(
+              userRepository: _userRepository,
+              assetsRepository: _assetsRepository,
+              downloadsRepository: _downloadsRepository,
+            ),
+          ),
+          BlocProvider(create: (_) => PackDetailsBloc()),
         ],
         child: const AppView(),
       ),
@@ -96,9 +99,11 @@ class _AppViewState extends State<AppView> {
         },
         initialRoute: "/splash",
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
           useMaterial3: true,
-          brightness: Brightness.dark,
         ),
         themeMode: ThemeMode.dark,
         builder: (context, child) {
