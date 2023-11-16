@@ -29,8 +29,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   Future<void> load(event, emit) async {
     final user = await _userRepository.getUser();
     final unassignedAssets =
-        await _assetsRepository.getUnassignedPack(user!, true);
-    final packs = await _assetsRepository.getPacks(user, true);
+        await _assetsRepository.fetchUnassignedPack(user!);
+    final packs = await _assetsRepository.fetchPacks(user,);
 
     // To shimmer exact number of packs
     emit(HomePageLoading(

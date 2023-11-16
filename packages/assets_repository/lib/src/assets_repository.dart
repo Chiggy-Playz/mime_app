@@ -6,32 +6,16 @@ import 'package:user_repository/user_repository.dart';
 
 class AssetsRepository {
   final supabase = sp.Supabase.instance.client;
+  List<Pack> packs = [];
+  Pack? unassignedAssetsPack;
 
-  List<Pack> _packs = [];
-  Pack? _unassignedAssetsPack;
-
-  Future<Pack> getUnassignedPack(User user, [bool force = false]) async {
-    // return Pack(
-    //   userId: 330810865312071700,
-    //   identifier: "\$unassigned\$",
-    //   name: "Unassigned Stickers",
-    //   packId: 0,
-    //   assets: [
-    //     Asset(id: 586240877358350341, type: AssetType.emoji, animated: false),
-    //     Asset(id: 938503760811012106, type: AssetType.emoji, animated: false),
-    //     Asset(id: 814280618959568896, type: AssetType.emoji, animated: false),
-    //   ],
-    // );
-
-    if ((_unassignedAssetsPack?.assets.isNotEmpty ?? false) && !force)
-      return _unassignedAssetsPack!;
-
+  Future<Pack> fetchUnassignedPack(User user) async {
     var response = await supabase
         .from("unassigned_assets")
         .select<List<Map<String, dynamic>>>('asset_id, assets(type, animated)')
         .eq("user_id", user.id);
 
-    _unassignedAssetsPack = Pack(
+    unassignedAssetsPack = Pack(
       identifier: "\$unassigned\$",
       name: "Unassigned Stickers",
       packId: 0,
@@ -44,26 +28,10 @@ class AssetsRepository {
       })),
     );
 
-    return _unassignedAssetsPack!;
+    return unassignedAssetsPack!;
   }
 
-  Future<List<Pack>> getPacks(User user, [bool force = false]) async {
-    // return [
-    //   Pack(
-    //     identifier: "testicles",
-    //     name: "testicles",
-    //     packId: 1,
-    //     userId: 330810865312071700,
-    //     assets: [
-    //       Asset(id: 586240877358350341, type: AssetType.emoji, animated: false),
-    //       Asset(id: 938503760811012106, type: AssetType.emoji, animated: false),
-    //       Asset(id: 814280618959568896, type: AssetType.emoji, animated: false),
-    //     ],
-    //   )
-    // ];
-
-    if (_packs.isNotEmpty && !force) return _packs;
-
+  Future<List<Pack>> fetchPacks(User user) async {
     // Fetch all packs
     // Literally magic!!!
     var response = await supabase
@@ -72,8 +40,35 @@ class AssetsRepository {
             'pack_id, name, identifier, user_id, assets(id, type, animated)')
         .eq("user_id", user.id);
 
-    _packs = List<Pack>.from(response.map((pack) => Pack.fromMap(pack)));
+    packs = List<Pack>.from(response.map((pack) => Pack.fromMap(pack)));
 
-    return _packs;
+    return packs;
+  }
+
+  Future<Pack> createPack(User user, String name, String iconPath) async {
+    try {
+      // Insert into database
+      var response = await (supabase
+          .from("packs")
+          .insert({"name": name, "user_id": user.id}));
+      // Do something with the icon (not sure how im gonna handle this yet so leaving it blank rn
+
+      // Create pack object
+      var pack = Pack(
+        identifier: response.data![0]["identifier"],
+        name: name,
+        packId: response.data![0]["pack_id"],
+        userId: user.id,
+        assets: [],
+      );
+
+      // Add pack to list
+      packs.add(pack);
+
+      // Return pack
+      return pack;
+    } catch (e) {
+      throw Exception();
+    }
   }
 }
