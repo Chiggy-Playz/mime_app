@@ -21,15 +21,9 @@ class StickerPackListWidget extends StatefulWidget {
 }
 
 class StickerPackListWidgetState extends State<StickerPackListWidget> {
-  // PackID -> Expanded
-  Map<int, bool> expanded = {};
-
   @override
   void initState() {
     super.initState();
-    for (var pack in widget.packs) {
-      expanded[pack.packId] = true;
-    }
   }
 
   @override
@@ -78,28 +72,29 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
         );
       },
       child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
-          child: widget.packs.isEmpty
-              ? const CustomScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  slivers: [
-                      SliverFillRemaining(
-                        child: EmptyWidget(
-                            title: "No stickers yet",
-                            icon: Icons.image_not_supported,
-                            description:
-                                "You don't have any stickers yet. Get started by creating a new pack or importing from discord!"),
-                      ),
-                    ])
-              : ListView.builder(
-                  primary: false,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  key: UniqueKey(),
-                  itemCount: widget.packs.length,
-                  itemBuilder: (context, index) {
-                    return expansionTiles[index];
-                  },
-                )),
+        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+        child: widget.packs.isEmpty
+            ? const CustomScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                slivers: [
+                    SliverFillRemaining(
+                      child: EmptyWidget(
+                          title: "No stickers yet",
+                          icon: Icons.image_not_supported,
+                          description:
+                              "You don't have any stickers yet. Get started by creating a new pack or importing from discord!"),
+                    ),
+                  ])
+            : ListView.builder(
+                primary: false,
+                physics: const AlwaysScrollableScrollPhysics(),
+                key: UniqueKey(),
+                itemCount: widget.packs.length,
+                itemBuilder: (context, index) {
+                  return expansionTiles[index];
+                },
+              ),
+      ),
     );
   }
 }
