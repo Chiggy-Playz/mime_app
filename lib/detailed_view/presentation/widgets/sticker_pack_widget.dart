@@ -4,7 +4,7 @@ import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/core/extensions/build_context_extensions.dart';
-import 'package:mime_app/detailed_view/presentation/bloc/pack_details_bloc.dart';
+import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PackDetailsWidget extends StatefulWidget {

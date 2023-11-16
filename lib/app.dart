@@ -3,7 +3,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:downloads_repository/downloads_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mime_app/detailed_view/presentation/bloc/pack_details_bloc.dart';
+import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/home/bloc/home_page_bloc.dart';
 import 'package:mime_app/login/login.dart';
 import 'package:mime_app/splash.dart';
