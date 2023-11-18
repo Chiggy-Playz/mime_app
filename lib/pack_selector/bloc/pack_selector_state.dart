@@ -4,17 +4,15 @@ class PackSelectorState extends Equatable {
   const PackSelectorState(
     this.allPacks,
     this.selectedPacks,
-    this.selectMode,
   );
-  
+
   final List<Pack> allPacks;
   final Set<int> selectedPacks;
-  final bool selectMode;
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [allPacks, selectedPacks];
 }
 
 class PackSelectorInitial extends PackSelectorState {
-  PackSelectorInitial() : super([], {}, false);
+  PackSelectorInitial() : super([], {});
 }

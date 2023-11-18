@@ -1,7 +1,10 @@
+import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mime_app/new_pack/bloc/new_pack_bloc.dart';
 import 'package:mime_app/pack_selector/bloc/pack_selector_bloc.dart';
-import 'package:mime_app/pack_selector/presentation/widgets/new_pack_bottom_modal_widget.dart';
+import 'package:mime_app/new_pack/widgets/new_pack_bottom_modal_widget.dart';
+import 'package:user_repository/user_repository.dart';
 
 class PackSelectorScreen extends StatefulWidget {
   const PackSelectorScreen({super.key});
@@ -17,6 +20,12 @@ class PackSelectorScreen extends StatefulWidget {
 }
 
 class _PackSelectorScreenState extends State<PackSelectorScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<PackSelectorBloc>().add(const PackSelectorStarted());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PackSelectorBloc, PackSelectorState>(
@@ -53,7 +62,13 @@ class _PackSelectorScreenState extends State<PackSelectorScreen> {
   Future<void> newPackClicked() async {
     await showModalBottomSheet(
       context: context,
-      builder: (context) => const Wrap(children: [NewPackWidget()]),
+      builder: (_) => BlocProvider(
+        create: (_) => NewPackBloc(
+          RepositoryProvider.of<AssetsRepository>(context),
+          RepositoryProvider.of<UserRepository>(context),
+        ),
+        child: const Wrap(children: [NewPackWidget()]),
+      ),
       isScrollControlled: true,
     );
   }

@@ -11,6 +11,15 @@ class PackSelectorStarted extends PackSelectorEvent {
   const PackSelectorStarted();
 }
 
+class PacksRefresh extends PackSelectorEvent {
+  const PacksRefresh(this.packs);
+
+  final List<Pack> packs;
+
+  @override
+  List<Object> get props => [packs];
+}
+
 class PackSelected extends PackSelectorEvent {
   const PackSelected(this.packId, this.selected);
 
@@ -19,13 +28,4 @@ class PackSelected extends PackSelectorEvent {
 
   @override
   List<Object> get props => [packId, selected];
-}
-
-class NewPack extends PackSelectorEvent {
-
-  const NewPack(this.name, this.trayIconPath);
-
-
-  final String name;
-  final String? trayIconPath;
 }

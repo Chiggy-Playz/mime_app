@@ -9,6 +9,17 @@ class AssetsRepository {
   List<Pack> packs = [];
   Pack? unassignedAssetsPack;
 
+  final _packsController = StreamController<List<Pack>>.broadcast();
+  Stream<List<Pack>> get packsStream => _packsController.stream;
+
+  final _unassignedAssetsController = StreamController<Pack>.broadcast();
+  Stream<Pack> get unassignedAssetsStream => _unassignedAssetsController.stream;
+  
+  void dispose() {
+    _packsController.close();
+    _unassignedAssetsController.close();
+  }
+
   Future<Pack> fetchUnassignedPack(User user) async {
     var response = await supabase
         .from("unassigned_assets")
@@ -54,14 +65,22 @@ class AssetsRepository {
 
     try {
       // Insert into database
-      var response = await (supabase
-          .from("packs")
-          .insert({"name": name, "user_id": user.id, "identifier": name.toLowerCase()}));
+      var response;
+      try {
+        response = await (supabase.from("packs").insert({
+          "name": name,
+          "user_id": user.id,
+          "identifier": name.toLowerCase()
+        }).select());
+      } catch (e) {
+        throw DatabaseException();
+      }
+
       // Do something with the icon (not sure how im gonna handle this yet so leaving it blank rn
 
       // Create pack object
       var pack = Pack(
-        packId: response.data![0]["pack_id"],
+        packId: response[0]["pack_id"],
         identifier: name.toLowerCase(),
         name: name,
         userId: user.id,
@@ -70,7 +89,8 @@ class AssetsRepository {
 
       // Add pack to list
       packs.add(pack);
-
+      _packsController.add(List<Pack>.from(packs));
+      
       // Return pack
       return pack;
     } catch (e) {

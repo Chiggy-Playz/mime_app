@@ -6,3 +6,6 @@ class PackNameConflictException extends AssetRepositoryException {
   final String name;
 }
 
+class DatabaseException extends AssetRepositoryException {
+  DatabaseException();
+}

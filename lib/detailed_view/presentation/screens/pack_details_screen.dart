@@ -5,7 +5,6 @@ import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/detailed_view/presentation/widgets/sticker_pack_widget.dart';
 import 'package:mime_app/pack_selector/bloc/pack_selector_bloc.dart';
 import 'package:mime_app/pack_selector/presentation/screens/pack_select_screen.dart';
-import 'package:user_repository/user_repository.dart';
 
 class PackDetailsScreen extends StatefulWidget {
   const PackDetailsScreen({super.key, required this.pack});
@@ -30,7 +29,7 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
     return BlocBuilder<PackDetailsBloc, PackDetailsState>(
       builder: (context, state) {
         return Scaffold(
-            appBar: AppBar( 
+            appBar: AppBar(
               title: Text(widget.pack.name),
               actions: widget.pack.isUnassigned
                   ? null
@@ -54,7 +53,6 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
                     onPressed: () async {
                       final packSelectorBloc = PackSelectorBloc(
                         RepositoryProvider.of<AssetsRepository>(context),
-                        RepositoryProvider.of<UserRepository>(context),
                       );
 
                       await Navigator.of(context).push(
@@ -66,6 +64,7 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
                         ),
                       );
 
+                      await packSelectorBloc.close();
                     },
                     child: const Icon(Icons.add),
                   )
