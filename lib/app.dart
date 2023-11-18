@@ -99,12 +99,17 @@ class _AppViewState extends State<AppView> {
         },
         initialRoute: "/splash",
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-        ),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue,
+              brightness: Brightness.dark,
+            ),
+            useMaterial3: true,
+            inputDecorationTheme: InputDecorationTheme(
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              
+            )),
         themeMode: ThemeMode.dark,
         builder: (context, child) {
           return BlocListener<AuthenticationBloc, AuthenticationState>(

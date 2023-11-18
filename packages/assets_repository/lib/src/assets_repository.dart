@@ -46,18 +46,24 @@ class AssetsRepository {
   }
 
   Future<Pack> createPack(User user, String name, String iconPath) async {
+    // Validation
+    // Check if pack name already exists
+    if (packs.any((pack) => pack.name.toLowerCase() == name.toLowerCase())) {
+      throw PackNameConflictException(name);
+    }
+
     try {
       // Insert into database
       var response = await (supabase
           .from("packs")
-          .insert({"name": name, "user_id": user.id}));
+          .insert({"name": name, "user_id": user.id, "identifier": name.toLowerCase()}));
       // Do something with the icon (not sure how im gonna handle this yet so leaving it blank rn
 
       // Create pack object
       var pack = Pack(
-        identifier: response.data![0]["identifier"],
-        name: name,
         packId: response.data![0]["pack_id"],
+        identifier: name.toLowerCase(),
+        name: name,
         userId: user.id,
         assets: [],
       );
@@ -68,7 +74,7 @@ class AssetsRepository {
       // Return pack
       return pack;
     } catch (e) {
-      throw Exception();
+      throw Exception("An error occurred while creating the pack");
     }
   }
 }

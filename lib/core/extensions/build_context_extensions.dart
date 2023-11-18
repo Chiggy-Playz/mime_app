@@ -54,21 +54,22 @@ extension ColorHelper on BuildContext {
 }
 
 extension TextStyleHelper on BuildContext {
-  TextStyle? get titleLarge => Theme.of(this).textTheme.titleLarge;
-  TextStyle? get titleMedium => Theme.of(this).textTheme.titleMedium;
-  TextStyle? get titleSmall => Theme.of(this).textTheme.titleSmall;
-  TextStyle? get bodySmall => Theme.of(this).textTheme.bodySmall;
-  TextStyle? get bodyMedium => Theme.of(this).textTheme.bodyMedium;
-  TextStyle? get bodyLarge => Theme.of(this).textTheme.bodyLarge;
-  TextStyle? get labelLarge => Theme.of(this).textTheme.labelLarge;
-  TextStyle? get labelMedium => Theme.of(this).textTheme.labelMedium;
-  TextStyle? get labelSmall => Theme.of(this).textTheme.labelSmall;
-  TextStyle? get displayLarge => Theme.of(this).textTheme.displayLarge;
-  TextStyle? get displayMedium => Theme.of(this).textTheme.displayMedium;
-  TextStyle? get displaySmall => Theme.of(this).textTheme.displaySmall;
-  TextStyle? get headlineLarge => Theme.of(this).textTheme.headlineLarge;
-  TextStyle? get headlineMedium => Theme.of(this).textTheme.headlineMedium;
-  TextStyle? get headlineSmall => Theme.of(this).textTheme.headlineSmall;
+  TextTheme get textTheme => Theme.of(this).textTheme;
+  TextStyle? get titleLarge => textTheme.titleLarge;
+  TextStyle? get titleMedium => textTheme.titleMedium;
+  TextStyle? get titleSmall => textTheme.titleSmall;
+  TextStyle? get bodySmall => textTheme.bodySmall;
+  TextStyle? get bodyMedium => textTheme.bodyMedium;
+  TextStyle? get bodyLarge => textTheme.bodyLarge;
+  TextStyle? get labelLarge => textTheme.labelLarge;
+  TextStyle? get labelMedium => textTheme.labelMedium;
+  TextStyle? get labelSmall => textTheme.labelSmall;
+  TextStyle? get displayLarge => textTheme.displayLarge;
+  TextStyle? get displayMedium => textTheme.displayMedium;
+  TextStyle? get displaySmall => textTheme.displaySmall;
+  TextStyle? get headlineLarge => textTheme.headlineLarge;
+  TextStyle? get headlineMedium => textTheme.headlineMedium;
+  TextStyle? get headlineSmall => textTheme.headlineSmall;
 }
 
 extension TextStyleColorMapping on TextStyle {

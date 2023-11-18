@@ -66,4 +66,6 @@ class Pack extends RawPack {
         identifier: rawPack.identifier,
         assets: assets,
       );
+  
+  int get assetCount => assets.length;
 }
