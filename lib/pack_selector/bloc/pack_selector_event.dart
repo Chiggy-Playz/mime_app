@@ -21,11 +21,11 @@ class PacksRefresh extends PackSelectorEvent {
 }
 
 class PackSelected extends PackSelectorEvent {
-  const PackSelected(this.packId, this.selected);
+  const PackSelected(this.pack, this.selected);
 
-  final int packId;
+  final Pack pack;
   final bool selected;
 
   @override
-  List<Object> get props => [packId, selected];
+  List<Object> get props => [pack, selected];
 }

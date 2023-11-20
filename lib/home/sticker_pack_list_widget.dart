@@ -2,6 +2,7 @@ import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/core/widgets/empty_widget.dart';
+import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/detailed_view/presentation/screens/pack_details_screen.dart';
 import 'package:mime_app/home/sticker_pack_preview_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -40,7 +41,14 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
           elevation: 8,
           child: InkWell(
             onTap: () {
-              Navigator.of(context).push(PackDetailsScreen.route(pack));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => BlocProvider(
+                    create: (_) => PackDetailsBloc(pack),
+                    child: const PackDetailsScreen(),
+                  ),
+                ),
+              );
             },
             child: Column(
               children: [

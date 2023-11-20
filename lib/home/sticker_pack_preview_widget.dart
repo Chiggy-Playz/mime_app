@@ -47,13 +47,6 @@ class _StickerPackPreviewWidgetState extends State<StickerPackPreviewWidget> {
                     : Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
                           image: DecorationImage(
                             image: FileImage(asset.file(cacheDir!)),
                             fit: BoxFit.fill,

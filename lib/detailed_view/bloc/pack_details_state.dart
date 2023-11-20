@@ -1,8 +1,9 @@
 part of 'pack_details_bloc.dart';
 
 class PackDetailsState extends Equatable {
-  const PackDetailsState(this.selectedAssets, this.selectMode);
+  const PackDetailsState(this.pack, this.selectedAssets, this.selectMode);
 
+  final Pack pack;
   final Set<int> selectedAssets;
   final bool selectMode;
 
@@ -15,5 +16,5 @@ class PackDetailsState extends Equatable {
 }
 
 final class PackDetailsInitial extends PackDetailsState {
-  PackDetailsInitial() : super({}, false);
+  PackDetailsInitial(Pack pack) : super(pack, {}, false);
 }

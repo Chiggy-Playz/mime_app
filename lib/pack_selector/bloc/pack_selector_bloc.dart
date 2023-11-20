@@ -13,7 +13,7 @@ class PackSelectorBloc extends Bloc<PackSelectorEvent, PackSelectorState> {
   StreamSubscription<List<Pack>>? _packsSubscription;
 
   // If pack id is in set, it is selected
-  Set<int> selectedPacks = {};
+  Set<Pack> selectedPacks = {};
 
   PackSelectorBloc(this._assetsRepository) : super(PackSelectorInitial()) {
     _packsSubscription = _assetsRepository.packsStream.listen((newPacks) {
@@ -24,7 +24,7 @@ class PackSelectorBloc extends Bloc<PackSelectorEvent, PackSelectorState> {
       (_, emit) => emit(
         PackSelectorState(
           List<Pack>.from(_assetsRepository.packs),
-          selectedPacks,
+          Set<Pack>.from(selectedPacks),
         ),
       ),
     );
@@ -32,8 +32,8 @@ class PackSelectorBloc extends Bloc<PackSelectorEvent, PackSelectorState> {
     on<PacksRefresh>((event, emit) {
       emit(
         PackSelectorState(
-          event.packs,
-          selectedPacks,
+          List<Pack>.from(event.packs),
+          Set<Pack>.from(selectedPacks),
         ),
       );
     });
@@ -48,17 +48,15 @@ class PackSelectorBloc extends Bloc<PackSelectorEvent, PackSelectorState> {
   }
 
   void onPackSelect(PackSelected event, Emitter<PackSelectorState> emit) {
-    final packId = event.packId;
-    final selected = event.selected;
-
-    if (selected) {
-      selectedPacks.add(packId);
+    final pack = event.pack;
+    if (event.selected) {
+      selectedPacks.add(pack);
     } else {
-      selectedPacks.remove(packId);
+      selectedPacks.remove(pack);
     }
     emit(PackSelectorState(
-      _assetsRepository.packs,
-      selectedPacks,
+      List<Pack>.from(_assetsRepository.packs),
+      Set<Pack>.from(selectedPacks),
     ));
   }
 }

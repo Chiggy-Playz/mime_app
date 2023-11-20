@@ -1,3 +1,4 @@
+import 'package:assets_repository/assets_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
@@ -6,10 +7,11 @@ part 'pack_details_state.dart';
 
 class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
   // If asset id is in set, it is selected
+  Pack pack;
   Set<int> selectedAssets = {};
   bool selectMode = false;
 
-  PackDetailsBloc() : super(PackDetailsInitial()) {
+  PackDetailsBloc(this.pack) : super(PackDetailsInitial(pack)) {
     on<AssetSelected>(onAssetSelected);
   }
 
@@ -20,15 +22,11 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
       selectedAssets.add(assetId);
     } else {
       selectedAssets.remove(assetId);
-      if (selectedAssets.isEmpty) {
-        selectMode = false;
-      }
     }
-    emit(PackDetailsState(Set.from(selectedAssets), selectMode));
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
   }
 
   void toggleSelectMode() {
     selectMode = !selectMode;
   }
-
 }

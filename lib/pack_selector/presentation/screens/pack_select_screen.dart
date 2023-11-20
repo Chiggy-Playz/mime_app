@@ -47,13 +47,24 @@ class _PackSelectorScreenState extends State<PackSelectorScreen> {
               index -= 1;
               final pack = state.allPacks[index];
               return CheckboxListTile(
-                value: state.selectedPacks.contains(pack.packId),
-                onChanged: (value) {},
+                value: state.selectedPacks.contains(pack),
                 title: Text(pack.name),
                 subtitle: Text("${pack.assetCount} stickers"),
+                onChanged: (value) {
+                  BlocProvider.of<PackSelectorBloc>(context)
+                      .add(PackSelected(pack, value ?? false));
+                },
               );
             },
           ),
+          floatingActionButton: state.selectedPacks.isEmpty
+              ? null
+              : FloatingActionButton(
+                  child: const Icon(Icons.done),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
         );
       },
     );

@@ -67,7 +67,6 @@ class _MimeAppState extends State<MimeApp> {
               downloadsRepository: _downloadsRepository,
             ),
           ),
-          BlocProvider(create: (_) => PackDetailsBloc()),
         ],
         child: const AppView(),
       ),
@@ -99,17 +98,21 @@ class _AppViewState extends State<AppView> {
         },
         initialRoute: "/splash",
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue,
-              brightness: Brightness.dark,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
+          scaffoldBackgroundColor: Colors.black,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.black,
+          ),
+          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12.0),
             ),
-            useMaterial3: true,
-            inputDecorationTheme: InputDecorationTheme(
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              
-            )),
+          ),
+        ),
         themeMode: ThemeMode.dark,
         builder: (context, child) {
           return BlocListener<AuthenticationBloc, AuthenticationState>(

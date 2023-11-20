@@ -7,7 +7,7 @@ class PackSelectorState extends Equatable {
   );
 
   final List<Pack> allPacks;
-  final Set<int> selectedPacks;
+  final Set<Pack> selectedPacks;
 
   @override
   List<Object> get props => [allPacks, selectedPacks];
