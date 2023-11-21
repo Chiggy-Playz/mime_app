@@ -57,7 +57,7 @@ class _PackDetailsWidgetState extends State<PackDetailsWidget> {
                 // if already selected, do nothing
                 if (selected) return;
                 if (!state.selectMode) {
-                  bloc.toggleSelectMode();
+                  bloc.add(ToggleSelectMode());
                 }
                 bloc.add(AssetSelected(asset.id, true));
               },

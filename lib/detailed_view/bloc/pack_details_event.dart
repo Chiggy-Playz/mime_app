@@ -16,3 +16,9 @@ class AssetSelected extends PackDetailsEvent {
   @override
   List<Object> get props => [assetId, selected];
 }
+
+class ToggleSelectMode extends PackDetailsEvent {}
+
+class SelectAll extends PackDetailsEvent {}
+
+class DeselectAll extends PackDetailsEvent {}

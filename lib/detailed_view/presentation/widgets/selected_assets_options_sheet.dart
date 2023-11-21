@@ -23,7 +23,7 @@ class _SelectedAssetsOptionsSheetState
         return TweenAnimationBuilder(
           tween: Tween<double>(
             begin: 0.0,
-            end: state.selectMode ? 0.15 : 0.0,
+            end: state.selectedAssets.isNotEmpty ? 0.15 : 0.0,
           ),
           duration: const Duration(milliseconds: 500),
           curve: Curves.easeOutQuad,

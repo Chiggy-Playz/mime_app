@@ -21,13 +21,15 @@ class LabeledIcon extends StatelessWidget {
         child: Center(
           child: Ink(
             width: 108,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(iconData, size: 24),
-                Text(label),
-              ],
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(iconData, size: 24),
+                  Text(label),
+                ],
+              ),
             ),
           ),
         ),

@@ -13,6 +13,9 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
 
   PackDetailsBloc(this.pack) : super(PackDetailsInitial(pack)) {
     on<AssetSelected>(onAssetSelected);
+    on<SelectAll>(onSelectAll);
+    on<DeselectAll>(onDeselectAll);
+    on<ToggleSelectMode>(toggleSelectMode);
   }
 
   void onAssetSelected(AssetSelected event, Emitter<PackDetailsState> emit) {
@@ -22,11 +25,26 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
       selectedAssets.add(assetId);
     } else {
       selectedAssets.remove(assetId);
+      selectMode = selectedAssets.isNotEmpty;
     }
     emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
   }
 
-  void toggleSelectMode() {
+  void toggleSelectMode(
+      ToggleSelectMode event, Emitter<PackDetailsState> emit) {
     selectMode = !selectMode;
+    selectedAssets = {};
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
+  }
+
+  void onSelectAll(SelectAll event, Emitter<PackDetailsState> emit) {
+    selectedAssets = Set.from(pack.assets.map((e) => e.id));
+    selectMode = true;
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
+  }
+
+  void onDeselectAll(DeselectAll event, Emitter<PackDetailsState> emit) {
+    selectedAssets = {};
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
   }
 }

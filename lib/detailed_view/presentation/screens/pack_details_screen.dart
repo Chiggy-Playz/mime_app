@@ -1,11 +1,8 @@
-import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/detailed_view/presentation/widgets/selected_assets_options_sheet.dart';
 import 'package:mime_app/detailed_view/presentation/widgets/sticker_pack_widget.dart';
-import 'package:mime_app/pack_selector/bloc/pack_selector_bloc.dart';
-import 'package:mime_app/pack_selector/presentation/screens/pack_select_screen.dart';
 
 class PackDetailsScreen extends StatefulWidget {
   const PackDetailsScreen({super.key});
@@ -44,11 +41,9 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
           actions = [
             IconButton(
               onPressed: () async {
-                for (final asset in pack.assets) {
-                  context
-                      .read<PackDetailsBloc>()
-                      .add(AssetSelected(asset.id, value));
-                }
+                context
+                    .read<PackDetailsBloc>()
+                    .add(value ? SelectAll() : DeselectAll());
               },
               icon: Icon(value ? Icons.select_all : Icons.deselect),
             ),
@@ -63,6 +58,13 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
           appBar: AppBar(
             title: Text(appBarTitle),
             actions: actions,
+            leading: state.selectMode
+                ? IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () =>
+                        context.read<PackDetailsBloc>().add(ToggleSelectMode()),
+                  )
+                : null,
           ),
           body: Stack(
             children: [body, const SelectedAssetsOptionsSheet()],
