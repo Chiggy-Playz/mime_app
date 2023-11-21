@@ -76,7 +76,6 @@ class _PackSelectorScreenState extends State<PackSelectorScreen> {
       builder: (_) => BlocProvider(
         create: (_) => NewPackBloc(
           RepositoryProvider.of<AssetsRepository>(context),
-          RepositoryProvider.of<UserRepository>(context),
         ),
         child: const Wrap(children: [NewPackWidget()]),
       ),

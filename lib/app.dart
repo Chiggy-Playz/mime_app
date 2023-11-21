@@ -3,7 +3,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:downloads_repository/downloads_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/home/bloc/home_page_bloc.dart';
 import 'package:mime_app/login/login.dart';
 import 'package:mime_app/splash.dart';
@@ -30,9 +29,9 @@ class _MimeAppState extends State<MimeApp> {
   @override
   void initState() {
     super.initState();
-    _authenticationRepository = AuthenticationRepository();
     _userRepository = UserRepository();
-    _assetsRepository = AssetsRepository();
+    _authenticationRepository = AuthenticationRepository();
+    _assetsRepository = AssetsRepository(_userRepository);
     _downloadsRepository = DownloadsRepository();
   }
 
