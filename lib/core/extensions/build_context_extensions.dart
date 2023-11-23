@@ -12,6 +12,7 @@ extension ShowSnackBar on BuildContext {
       backgroundColor:
           backgroundColor ?? Theme.of(this).snackBarTheme.backgroundColor,
       action: action,
+      behavior: SnackBarBehavior.floating,
     ));
   }
 

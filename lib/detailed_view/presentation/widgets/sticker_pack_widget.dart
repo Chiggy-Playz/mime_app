@@ -36,6 +36,7 @@ class _PackDetailsWidgetState extends State<PackDetailsWidget> {
     }
 
     return BlocBuilder<PackDetailsBloc, PackDetailsState>(
+      buildWhen: (previous, current) => current is! PackDetailsNoBuild,
       builder: (context, state) {
         final bloc = BlocProvider.of<PackDetailsBloc>(context);
         return GridView.count(

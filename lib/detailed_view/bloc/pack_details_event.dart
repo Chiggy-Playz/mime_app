@@ -7,6 +7,15 @@ sealed class PackDetailsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class PackDetailsRefresh extends PackDetailsEvent {
+  const PackDetailsRefresh(this.pack);
+
+  final Pack pack;
+
+  @override
+  List<Object> get props => [pack];
+}
+
 class AssetSelected extends PackDetailsEvent {
   const AssetSelected(this.assetId, this.selected);
 
@@ -22,3 +31,14 @@ class ToggleSelectMode extends PackDetailsEvent {}
 class SelectAll extends PackDetailsEvent {}
 
 class DeselectAll extends PackDetailsEvent {}
+
+class TransferAssets extends PackDetailsEvent {
+  const TransferAssets(this.destinationPacks, this.assets, this.copy);
+
+  final List<Pack> destinationPacks;
+  final List<Asset> assets;
+  final bool copy;
+
+  @override
+  List<Object> get props => [destinationPacks, assets, copy];
+}

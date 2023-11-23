@@ -12,9 +12,38 @@ class PackDetailsState extends Equatable {
   }
 
   @override
-  List<Object> get props => [selectedAssets, selectMode];
+  List<Object> get props => [pack, selectedAssets, selectMode];
 }
 
 final class PackDetailsInitial extends PackDetailsState {
   PackDetailsInitial(Pack pack) : super(pack, {}, false);
+}
+
+final class AssetTransferSuccess extends PackDetailsState {
+  const AssetTransferSuccess(
+      Pack pack, Set<int> selectedAssets, bool selectMode, this.copy)
+      : super(pack, selectedAssets, selectMode);
+  final bool copy;
+}
+
+// No re-build states
+final class PackDetailsNoBuild extends PackDetailsState {
+  PackDetailsNoBuild() : super(Pack.empty(), {}, false);
+}
+
+final class PackDetailsLoading extends PackDetailsNoBuild {
+  PackDetailsLoading();
+}
+
+// Errors
+final class PackDetailsError extends PackDetailsNoBuild {}
+
+final class AnimatedAssetError extends PackDetailsError {
+  AnimatedAssetError(this.errorPack);
+  final Pack errorPack;
+}
+
+final class PackAssetLimitExceededError extends PackDetailsError {
+  PackAssetLimitExceededError(this.errorPack);
+  final Pack errorPack;
 }

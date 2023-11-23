@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mime_app/core/extensions/build_context_extensions.dart';
 import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/detailed_view/presentation/widgets/selected_assets_options_sheet.dart';
 import 'package:mime_app/detailed_view/presentation/widgets/sticker_pack_widget.dart';
@@ -15,7 +16,27 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PackDetailsBloc, PackDetailsState>(
-      listener: (context, state) {},
+      buildWhen: (previous, current) => current is! PackDetailsNoBuild,
+      listener: (context, state) {
+        if (state is PackDetailsLoading) {
+          // TODO: Show loading modal/page
+          // Navigator.of(context).push(LoadingPage.route(),);
+        } else if (state is AssetTransferSuccess) {
+          context.showSnackBar(
+              message:
+                  "Assets ${state.copy ? "copied" : "moved"} successfully");
+        } else if (state is AnimatedAssetError) {
+          context.showErrorSnackBar(
+              message:
+                  "Cannot mix animated and static stickers in the same pack ${state.errorPack.name}");
+        } else if (state is PackAssetLimitExceededError) {
+          context.showErrorSnackBar(
+              message:
+                  "Cannot add more than 30 stickers to a pack ${state.errorPack.name}");
+        } else if (state is PackDetailsError) {
+          context.showErrorSnackBar(message: "Something went wrong");
+        }
+      },
       builder: (context, state) {
         final pack = state.pack;
         List<Widget> actions = [];

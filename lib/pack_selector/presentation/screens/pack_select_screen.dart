@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/new_pack/bloc/new_pack_bloc.dart';
 import 'package:mime_app/pack_selector/bloc/pack_selector_bloc.dart';
 import 'package:mime_app/new_pack/widgets/new_pack_bottom_modal_widget.dart';
-import 'package:user_repository/user_repository.dart';
 
 class PackSelectorScreen extends StatefulWidget {
   const PackSelectorScreen({super.key});

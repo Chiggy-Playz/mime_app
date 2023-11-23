@@ -101,4 +101,80 @@ class AssetsRepository {
       throw Exception("An error occurred while creating the pack");
     }
   }
+
+  Future<void> transferAssets(
+      {required List<Asset> assets,
+      required Pack sourcePack,
+      required List<Pack> destinationPacks,
+      required bool copy}) async {
+    // Check if we're trying to add animated assets to a non-animated pack
+    // Or vice-versa
+    // Check if any pack goes over 30 assets
+    for (var pack in destinationPacks) {
+      if (pack.isEmpty) continue;
+
+      if (pack.isAnimated && assets.any((asset) => !asset.animated)) {
+        throw AnimatedAssetPackMixException(pack);
+      }
+      if (!pack.isAnimated && assets.any((asset) => asset.animated)) {
+        throw AnimatedAssetPackMixException(pack);
+      }
+      if (pack.assetCount + assets.length > 30) {
+        throw PackAssetLimitExceededException(pack);
+      }
+    }
+
+    // Actually transfer the assets
+    for (var destinationPack in destinationPacks) {
+      await (supabase.from("pack_contents").upsert(assets
+          .map((asset) => {
+                "pack_id": destinationPack.packId,
+                "asset_id": asset.id,
+              })
+          .toList()));
+    }
+
+    if (!copy) {
+      // When moving, remove the assets from the original pack
+      if (sourcePack.isUnassigned) {
+        await (supabase
+            .from("unassigned_assets")
+            .delete()
+            .in_("asset_id", assets.map((asset) => asset.id).toList())
+            .eq("user_id", _userRepository.user!.id));
+      } else {
+        await (supabase
+            .from("pack_contents")
+            .delete()
+            .in_("asset_id", assets.map((asset) => asset.id).toList())
+            .eq("pack_id", sourcePack.packId));
+      }
+    }
+
+    // Update the local packs cache
+    for (var destinationPack in destinationPacks) {
+      // Update local packs cache
+      for (var pack in this.packs) {
+        // Add to destination pack
+        if (pack.packId == destinationPack.packId) {
+          pack.assets.addAll(assets);
+          break;
+        }
+        // If we're moving, remove from source pack
+        if (!copy && pack.packId == sourcePack.packId) {
+          pack.assets.removeWhere((asset) => assets.contains(asset));
+          break;
+        }
+      }
+    }
+    _packsController.add(List<Pack>.from(packs));
+    if (!copy) {
+      // If we're moving from unassigned pack, remove from unassigned pack
+      if (sourcePack.isUnassigned) {
+        unassignedAssetsPack!.assets
+            .removeWhere((asset) => assets.contains(asset));
+        _unassignedAssetsController.add(unassignedAssetsPack!);
+      }
+    }
+  }
 }

@@ -44,7 +44,10 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => BlocProvider(
-                    create: (_) => PackDetailsBloc(pack),
+                    create: (creatorContext) => PackDetailsBloc(
+                      pack,
+                      RepositoryProvider.of<AssetsRepository>(creatorContext),
+                    ),
                     child: const PackDetailsScreen(),
                   ),
                 ),

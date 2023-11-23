@@ -1,6 +1,7 @@
 import 'package:assets_repository/assets_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mime_app/core/extensions/build_context_extensions.dart';
 import 'package:mime_app/core/widgets/labeled_icon.dart';
 import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/pack_selector/bloc/pack_selector_bloc.dart';
@@ -19,6 +20,7 @@ class _SelectedAssetsOptionsSheetState
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PackDetailsBloc, PackDetailsState>(
+      buildWhen: (previous, current) => current is! PackDetailsNoBuild,
       builder: (context, state) {
         return TweenAnimationBuilder(
           tween: Tween<double>(
@@ -53,22 +55,20 @@ class _SelectedAssetsOptionsSheetState
                             LabeledIcon(
                               iconData: Icons.copy,
                               label: "Copy to",
-                              onTap: () async {
-                                print("Copy!");
-                              },
+                              onTap: () async =>
+                                  transferAssetsPressed(copy: true),
                             ),
                           LabeledIcon(
                             iconData: Icons.move_to_inbox,
                             label: "Move to",
-                            onTap: () async {
-                              print("Move!");
-                            },
+                            onTap: () async =>
+                                transferAssetsPressed(copy: false),
                           ),
                           LabeledIcon(
                             iconData: Icons.delete,
                             label: "Delete",
                             onTap: () async {
-                              print("Delete!");
+                              context.showErrorSnackBar(message: "Bleh");
                             },
                           ),
                         ],
@@ -84,9 +84,10 @@ class _SelectedAssetsOptionsSheetState
     );
   }
 
-  Future<void> onMoveToPressed() async {
+  Future<void> transferAssetsPressed({required bool copy}) async {
+    final assetsRepository = RepositoryProvider.of<AssetsRepository>(context);
     final packSelectorBloc = PackSelectorBloc(
-      RepositoryProvider.of<AssetsRepository>(context),
+      assetsRepository,
     );
 
     await Navigator.of(context).push(
@@ -97,9 +98,17 @@ class _SelectedAssetsOptionsSheetState
         ),
       ),
     );
+    if (!mounted) return;
+
     Set<Pack> selectedPacks = packSelectorBloc.selectedPacks;
+    var packDetailsBloc = context.read<PackDetailsBloc>();
+    var assets = packDetailsBloc.pack.assets
+        .where((asset) => packDetailsBloc.selectedAssets.contains(asset.id))
+        .toList();
     await packSelectorBloc.close();
 
     if (selectedPacks.isEmpty) return;
+
+    packDetailsBloc.add(TransferAssets(selectedPacks.toList(), assets, copy));
   }
 }

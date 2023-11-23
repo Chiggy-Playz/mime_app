@@ -66,6 +66,17 @@ class Pack extends RawPack {
         identifier: rawPack.identifier,
         assets: assets,
       );
-  
+
+  factory Pack.empty() => Pack(
+        userId: -1,
+        packId: -1,
+        name: "",
+        identifier: "",
+        assets: [],
+      );
+
+  bool get isEmpty => assets.isEmpty;
+  bool get isNotEmpty => assets.isNotEmpty;
   int get assetCount => assets.length;
+  bool get isAnimated => assets.any((element) => element.animated);
 }
