@@ -75,20 +75,30 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
           child: PackDetailsWidget(pack: pack),
         );
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(appBarTitle),
-            actions: actions,
-            leading: state.selectMode
-                ? IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () =>
-                        context.read<PackDetailsBloc>().add(ToggleSelectMode()),
-                  )
-                : null,
-          ),
-          body: Stack(
-            children: [body, const SelectedAssetsOptionsSheet()],
+        return WillPopScope(
+          onWillPop: () async {
+            if (state.selectMode) {
+              context.read<PackDetailsBloc>().add(ToggleSelectMode());
+              return false;
+            }
+            return true;
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(appBarTitle),
+              actions: actions,
+              leading: state.selectMode
+                  ? IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => context
+                          .read<PackDetailsBloc>()
+                          .add(ToggleSelectMode()),
+                    )
+                  : null,
+            ),
+            body: Stack(
+              children: [body, const SelectedAssetsOptionsSheet()],
+            ),
           ),
         );
       },
