@@ -42,3 +42,13 @@ class TransferAssets extends PackDetailsEvent {
   @override
   List<Object> get props => [destinationPacks, assets, copy];
 }
+
+
+class DeleteAssets extends PackDetailsEvent {
+  const DeleteAssets(this.assets);
+
+  final List<Asset> assets;
+
+  @override
+  List<Object> get props => [assets];
+}

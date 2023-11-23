@@ -32,7 +32,7 @@ class _StickerPackPreviewWidgetState extends State<StickerPackPreviewWidget> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 2.w),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         // We'll show 3 preview stickers and 4th widget will indicate how many stickers are in the pack
         children: [
           for (var asset in widget.pack.assets.take(3))

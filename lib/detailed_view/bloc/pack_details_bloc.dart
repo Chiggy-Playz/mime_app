@@ -25,9 +25,10 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
     on<DeselectAll>(onDeselectAll);
     on<ToggleSelectMode>(toggleSelectMode);
     on<TransferAssets>(onTransferAssets);
+    on<DeleteAssets>(onDeleteAssets);
 
     _packsSubscription = _assetsRepository.packsStream.listen((newPacks) {
-      if (this.pack.isUnassigned) return;
+      if (pack.isUnassigned) return;
       add(
         PackDetailsRefresh(
           newPacks.firstWhere(
@@ -105,6 +106,31 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
 
     emit(AssetTransferSuccess(
         pack, Set.from(selectedAssets), selectMode, event.copy));
+  }
+
+  Future<void> onDeleteAssets(
+      DeleteAssets event, Emitter<PackDetailsState> emit) async {
+    emit(PackDetailsLoading());
+    try {
+      await _assetsRepository.deleteAssets(
+        assets: event.assets,
+        sourcePack: pack,
+      );
+    } catch (e) {
+      emit(PackDetailsError());
+      return;
+    }
+
+    // If deleting from unassigned, refresh the pack manually :(
+    if (pack.isUnassigned) {
+      pack = _assetsRepository.unassignedAssetsPack!;
+    }
+
+    // Set select mode to false
+    selectMode = false;
+    selectedAssets = {};
+
+    emit(AssetDeleteSuccess(pack, Set.from(selectedAssets), selectMode));
   }
 
   @override

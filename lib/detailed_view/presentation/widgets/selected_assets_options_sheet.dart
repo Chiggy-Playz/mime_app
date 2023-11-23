@@ -67,9 +67,7 @@ class _SelectedAssetsOptionsSheetState
                           LabeledIcon(
                             iconData: Icons.delete,
                             label: "Delete",
-                            onTap: () async {
-                              context.showErrorSnackBar(message: "Bleh");
-                            },
+                            onTap: deleteAssetsPressed,
                           ),
                         ],
                       ),
@@ -110,5 +108,14 @@ class _SelectedAssetsOptionsSheetState
     if (selectedPacks.isEmpty) return;
 
     packDetailsBloc.add(TransferAssets(selectedPacks.toList(), assets, copy));
+  }
+
+  Future<void> deleteAssetsPressed() async {
+    var packDetailsBloc = context.read<PackDetailsBloc>();
+    var assets = packDetailsBloc.pack.assets
+        .where((asset) => packDetailsBloc.selectedAssets.contains(asset.id))
+        .toList();
+
+    packDetailsBloc.add(DeleteAssets(assets));
   }
 }

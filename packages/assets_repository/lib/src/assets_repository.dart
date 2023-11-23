@@ -177,4 +177,33 @@ class AssetsRepository {
       }
     }
   }
+
+  Future<void> deleteAssets(
+      {required List<Asset> assets, required Pack sourcePack}) async {
+    // Delete from database
+    if (sourcePack.isUnassigned) {
+      await (supabase
+          .from("unassigned_assets")
+          .delete()
+          .in_("asset_id", assets.map((asset) => asset.id).toList())
+          .eq("user_id", _userRepository.user!.id));
+    } else {
+      await (supabase
+          .from("pack_contents")
+          .delete()
+          .in_("asset_id", assets.map((asset) => asset.id).toList())
+          .eq("pack_id", sourcePack.packId));
+    }
+    // Update local packs cache
+    for (var pack in this.packs) {
+      pack.assets.removeWhere((asset) => assets.contains(asset));
+    }
+    _packsController.add(List<Pack>.from(packs));
+
+    if (sourcePack.isUnassigned) {
+      unassignedAssetsPack!.assets
+          .removeWhere((asset) => assets.contains(asset));
+      _unassignedAssetsController.add(unassignedAssetsPack!);
+    }
+  }
 }

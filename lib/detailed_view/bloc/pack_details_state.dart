@@ -26,6 +26,12 @@ final class AssetTransferSuccess extends PackDetailsState {
   final bool copy;
 }
 
+final class AssetDeleteSuccess extends PackDetailsState {
+  const AssetDeleteSuccess(
+      Pack pack, Set<int> selectedAssets, bool selectMode)
+      : super(pack, selectedAssets, selectMode);
+}
+
 // No re-build states
 final class PackDetailsNoBuild extends PackDetailsState {
   PackDetailsNoBuild() : super(Pack.empty(), {}, false);
