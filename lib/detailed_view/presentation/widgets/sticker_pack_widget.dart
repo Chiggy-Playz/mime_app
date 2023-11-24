@@ -50,6 +50,7 @@ class _PackDetailsWidgetState extends State<PackDetailsWidget> {
             var image = Image.file(
               asset.file(cacheDir!),
               fit: BoxFit.fill,
+              
             );
 
             var imagePaddingValue = selected ? 14.0 : 0.0;

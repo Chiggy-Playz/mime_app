@@ -22,22 +22,17 @@ class Asset extends Equatable {
 
   String get url {
     if (type == AssetType.emoji) {
-      return "https://cdn.discordapp.com/emojis/$id.${extension(true)}?size=512&quality=lossless";
+      return "https://cdn.discordapp.com/emojis/$id.${extension}?size=512&quality=lossless";
     } else {
       return "https://media.discordapp.net/stickers/${id}.png?size=512";
     }
   }
 
-  File file(Directory directory, {bool compressed = true}) {
-    return File(directory.path +
-        '/$id.${extension(compressed)}');
+  File file(Directory directory) {
+    return File(directory.path + '/$id.webp');
   }
 
-  String extension(bool compressed) {
-    if (animated) return "gif";
-    if (type == AssetType.sticker || !compressed) return "png";
-    return "webp";
-  }
+  String get extension => animated ? 'gif' : 'webp';
 
   factory Asset.fromMap(Map<String, dynamic> json) => Asset(
         id: json["id"],
