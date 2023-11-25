@@ -1,8 +1,14 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:assets_repository/assets_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:whatsapp_stickers_handler/whatsapp_stickers_handler.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:fast_image_resizer/fast_image_resizer.dart';
 
 part 'pack_details_event.dart';
 part 'pack_details_state.dart';
@@ -26,6 +32,7 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
     on<ToggleSelectMode>(toggleSelectMode);
     on<TransferAssets>(onTransferAssets);
     on<DeleteAssets>(onDeleteAssets);
+    on<SyncStickers>(onSyncStickers);
 
     _packsSubscription = _assetsRepository.packsStream.listen((newPacks) {
       if (pack.isUnassigned) return;
@@ -131,6 +138,49 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
     selectedAssets = {};
 
     emit(AssetDeleteSuccess(pack, Set.from(selectedAssets), selectMode));
+  }
+
+  Future<void> onSyncStickers(
+      SyncStickers event, Emitter<PackDetailsState> emit) async {
+    emit(PackDetailsLoading());
+    try {
+      final WhatsappStickersHandler _whatsappStickersHandler =
+          WhatsappStickersHandler();
+      final dir = await getApplicationCacheDirectory();
+
+      Map<String, List<String>> stickers = <String, List<String>>{};
+      final rawImage = await rootBundle.load('assets/mime.png');
+      final bytes = await resizeImage(Uint8List.view(rawImage.buffer),
+          width: 96, height: 96);
+
+      // Write bytes to file
+      final trayIcon = File('${dir.path}/mime.png');
+      await trayIcon.writeAsBytes(bytes!.buffer.asInt8List(), flush: true);
+
+      for (var asset in pack.assets) {
+        stickers[WhatsappStickerImageHandler.fromFile(asset.file(dir).path)
+            .path] = ["🤓"];
+      }
+
+      await _whatsappStickersHandler.addStickerPack(
+        pack.identifier,
+        pack.name,
+        "Chiggy",
+        WhatsappStickerImageHandler.fromFile(trayIcon.path).path,
+        "",
+        "",
+        "",
+        pack.isAnimated,
+        stickers,
+      );
+    } catch (e) {
+      // Figure out animated stickers
+      // Need to 512x512, webp, minimum 8ms frame duration
+      print(e);
+      emit(PackDetailsError());
+      return;
+    }
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
   }
 
   @override

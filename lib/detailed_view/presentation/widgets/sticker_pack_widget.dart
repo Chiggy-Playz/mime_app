@@ -42,15 +42,14 @@ class _PackDetailsWidgetState extends State<PackDetailsWidget> {
         return GridView.count(
           shrinkWrap: true,
           crossAxisCount: 3,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
           children: List.generate(widget.pack.assets.length, (index) {
             final asset = widget.pack.assets[index];
             bool selected = state.selectedAssets.contains(asset.id);
             var image = Image.file(
               asset.file(cacheDir!),
               fit: BoxFit.fill,
-              
             );
 
             var imagePaddingValue = selected ? 14.0 : 0.0;

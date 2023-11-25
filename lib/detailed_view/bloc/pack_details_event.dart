@@ -52,3 +52,5 @@ class DeleteAssets extends PackDetailsEvent {
   @override
   List<Object> get props => [assets];
 }
+
+class SyncStickers extends PackDetailsEvent {}

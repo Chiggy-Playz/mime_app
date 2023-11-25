@@ -49,7 +49,9 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
               icon: const Icon(Icons.delete),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => context
+                  .read<PackDetailsBloc>()
+                  .add(SyncStickers()),
               icon: const Icon(Icons.sync),
             ),
           ];
