@@ -54,10 +54,10 @@ dependencies:
   whatsapp_stickers_handler:
     path: packages/whatsapp_stickers_handler
 dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.13.1"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 # The following section is specific to Flutter packages.
@@ -97,7 +97,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

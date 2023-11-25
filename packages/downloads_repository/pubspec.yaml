@@ -11,4 +11,4 @@ dependencies:
     path: ../assets_repository
   fast_image_resizer: ^0.0.2
   flutter_image_compress: ^2.1.0
-  ffmpeg_kit_flutter: ^6.0.3
+  ffmpeg_kit_flutter_full_gpl: ^6.0.3

@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:assets_repository/assets_repository.dart';
 import 'package:fast_image_resizer/fast_image_resizer.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:dio/dio.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
 
 class DownloadsRepository {
   late Dio _dio;
@@ -50,30 +51,29 @@ class DownloadsRepository {
     // Downloads assets in webp form for emojis and png for stickers
     await downloadMultipleFiles(
       assets.asMap().map(
-            (key, asset) => MapEntry(asset.url, asset.file(directory).path),
+            (key, asset) =>
+                MapEntry(asset.url, asset.file(directory, true).path),
           ),
     );
 
     // Once the the assets are downloaded, size them to 512x512 and save them as webp
     for (var asset in assets) {
+      String tempPath = asset.file(directory, true).path;
+      String outputPath = asset.file(directory).path;
       if (!asset.animated) {
-        final imageBytes = await asset.file(directory).readAsBytes();
-
-        final bytes = await resizeImage(imageBytes, width: 512, height: 512);
-
-        final bytesList = bytes!.buffer.asUint8List();
-
-        var result = await FlutterImageCompress.compressWithList(
-          bytesList,
-          format: CompressFormat.webp,
-        );
-
-        await asset.file(directory).writeAsBytes(result, flush: true);
+        var session = await FFmpegKit.execute(
+            '-i $tempPath -y -vf "scale=512:512:force_original_aspect_ratio=decrease,pad=512:512:-1:-1:color=#00000000" -vcodec webp -pix_fmt yuva420p $outputPath');
+        // Console output generated for this execution
+        final output = await session.getOutput();
+        print(output);
       } else {
         // Animated asset. Convert to gif to webp using ffmpeg
         await FFmpegKit.execute(
-            "-i ${asset.file(directory)} -vcodec webp -loop 0 -pix_fmt yuva420p ${asset.file(directory)}");
+            '-i $tempPath -y -vf "scale=512:512:force_original_aspect_ratio=decrease:flags=lanczos,split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse=sierra2_4a,pad=512:512:-1:-1:color=#00000000" -vcodec webp -pix_fmt yuva420p -quality 60 -loop 0 $outputPath');
       }
+
+      // Delete temp file
+      await File(tempPath).delete();
     }
   }
 }

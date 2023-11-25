@@ -28,8 +28,8 @@ class Asset extends Equatable {
     }
   }
 
-  File file(Directory directory) {
-    return File(directory.path + '/$id.webp');
+  File file(Directory directory, [bool temp = false]) {
+    return File(directory.path + '/${temp ? "temp-" : ""}$id.webp');
   }
 
   String get extension => animated ? 'gif' : 'webp';

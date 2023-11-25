@@ -49,7 +49,6 @@ class _StickerPackPreviewWidgetState extends State<StickerPackPreviewWidget> {
                           borderRadius: BorderRadius.circular(12),
                           image: DecorationImage(
                             image: FileImage(asset.file(cacheDir!)),
-                            fit: BoxFit.fill,
                           ),
                         ),
                         width: 18.w,

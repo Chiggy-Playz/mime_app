@@ -6,7 +6,7 @@ import FlutterMacOS
 import Foundation
 
 import app_links
-import ffmpeg_kit_flutter
+import ffmpeg_kit_flutter_full_gpl
 import flutter_image_compress_macos
 import path_provider_foundation
 import shared_preferences_foundation
