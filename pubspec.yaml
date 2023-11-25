@@ -72,6 +72,7 @@ flutter:
     # - assets/938503760811012106.webp
     - assets/logo.png
     - assets/discord_icon.png
+    - assets/icons/icon.png
     # - assets/icons/adaptive_foreground.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

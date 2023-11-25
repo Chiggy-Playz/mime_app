@@ -149,12 +149,12 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
       final dir = await getApplicationCacheDirectory();
 
       Map<String, List<String>> stickers = <String, List<String>>{};
-      final rawImage = await rootBundle.load('assets/mime.png');
+      final rawImage = await rootBundle.load('assets/icons/icon.png');
       final bytes = await resizeImage(Uint8List.view(rawImage.buffer),
           width: 96, height: 96);
 
       // Write bytes to file
-      final trayIcon = File('${dir.path}/mime.png');
+      final trayIcon = File('${dir.path}/icon.png');
       await trayIcon.writeAsBytes(bytes!.buffer.asInt8List(), flush: true);
 
       for (var asset in pack.assets) {
