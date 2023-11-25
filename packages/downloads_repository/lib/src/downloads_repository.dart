@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:assets_repository/assets_repository.dart';
 import 'package:fast_image_resizer/fast_image_resizer.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:dio/dio.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';

@@ -7,7 +7,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:whatsapp_stickers_handler/whatsapp_stickers_handler.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fast_image_resizer/fast_image_resizer.dart';
 
 part 'pack_details_event.dart';
