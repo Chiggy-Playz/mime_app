@@ -9,7 +9,7 @@ import 'package:mime_app/splash.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:user_repository/user_repository.dart';
 
-import 'package:mime_app/home/home.dart';
+import 'package:mime_app/home/presentation/screens/home.dart';
 
 import 'login/bloc/authentication_bloc.dart';
 

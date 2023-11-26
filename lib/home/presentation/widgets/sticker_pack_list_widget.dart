@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mime_app/core/widgets/empty_widget.dart';
 import 'package:mime_app/detailed_view/bloc/pack_details_bloc.dart';
 import 'package:mime_app/detailed_view/presentation/screens/pack_details_screen.dart';
-import 'package:mime_app/home/sticker_pack_preview_widget.dart';
+import 'package:mime_app/home/bloc/home_page_bloc.dart';
+import 'package:mime_app/home/presentation/widgets/sticker_pack_preview_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:user_repository/user_repository.dart';
 
-import 'bloc/home_page_bloc.dart';
 
 class StickerPackListWidget extends StatefulWidget {
   const StickerPackListWidget({super.key});
