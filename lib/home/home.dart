@@ -17,26 +17,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String appBarTitle = "Loading...";
-  String userAvatarUrl = "";
-
-  Map<Pack, bool> packsLoaded = {
-    Pack(
-      identifier: "\$dummmy pack for loading\$",
-      name: "dummmy pack for loading",
-      packId: 0,
-      userId: 0,
-      assets: List.generate(10, (index) => Asset.empty),
-    ): false,
-    Pack(
-      identifier: "\$dummmy pack for loading\$",
-      name: "dummmy pack for loading",
-      packId: 0,
-      userId: 0,
-      assets: List.generate(14, (index) => Asset.empty),
-    ): false,
-  };
-
   @override
   void initState() {
     super.initState();
@@ -45,48 +25,30 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomePageBloc, HomePageState>(
-      listener: (context, state) {
-        if (state is HomePageInitial) {
-          return;
-        }
-        appBarTitle = "Your Stickers";
-        if (state is HomePageLoading) {
-          userAvatarUrl = state.userAvatarUrl;
-          packsLoaded = {
-            if (state.unassignedAssetsPack.assets.isNotEmpty)
-              state.unassignedAssetsPack: false,
-            ...state.packs.asMap().map((key, value) => MapEntry(value, false)),
-          };
-          '';
-        } else if (state is HomePageStickerPackLoaded) {
-          packsLoaded[state.loadedPack] = true;
-        }
-      },
+    return BlocBuilder<HomePageBloc, HomePageState>(
       builder: (context, state) {
-        final bool loading = state is! HomePageLoaded;
-
         return Skeletonizer(
-          enabled: loading,
+          enabled: state.loading,
           child: Scaffold(
             appBar: AppBar(
-              title: Skeleton.keep(child: Text(appBarTitle)),
+              title: Skeleton.keep(
+                  child: Text(state.loading ? "Loading..." : "Your Stickers")),
               leading: Skeleton.replace(
                 replacement: Icon(
                   Icons.person,
                   size: 8.w,
                 ),
-                replace: userAvatarUrl.isEmpty,
+                replace: state.userAvatarUrl.isEmpty,
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: CircleAvatar(
-                    backgroundImage: NetworkImage(userAvatarUrl),
+                    backgroundImage: NetworkImage(state.userAvatarUrl),
                   ),
                 ),
               ),
             ),
             // Check if its initial loading, which means we dont even know how many packs there are
-            body: StickerPackListWidget(packsLoaded: packsLoaded),
+            body: const StickerPackListWidget(),
             floatingActionButton: Skeleton.keep(
               child: SpeedDial(
                 // Styling for m3

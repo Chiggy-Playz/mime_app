@@ -79,4 +79,7 @@ class Pack extends RawPack {
   bool get isNotEmpty => assets.isNotEmpty;
   int get assetCount => assets.length;
   bool get isAnimated => assets.any((element) => element.animated);
+
+  @override
+  List<Object?> get props => [packId, name, assetCount];
 }

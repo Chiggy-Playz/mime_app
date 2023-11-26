@@ -11,11 +11,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'bloc/home_page_bloc.dart';
 
 class StickerPackListWidget extends StatefulWidget {
-  const StickerPackListWidget({super.key, required this.packsLoaded});
-
-  final Map<Pack, bool> packsLoaded;
-
-  List<Pack> get packs => List.from(packsLoaded.keys);
+  const StickerPackListWidget({super.key});
 
   @override
   State<StickerPackListWidget> createState() => StickerPackListWidgetState();
@@ -29,83 +25,88 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> expansionTiles = [];
+    return BlocBuilder<HomePageBloc, HomePageState>(
+      builder: (context, state) {
+        List<Widget> packTiles = [];
 
-    for (var pack in widget.packs) {
-      expansionTiles.add(
-        Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          clipBehavior: Clip.antiAlias,
-          elevation: 8,
-          child: InkWell(
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => BlocProvider(
-                    create: (creatorContext) => PackDetailsBloc(
-                      pack,
-                      RepositoryProvider.of<AssetsRepository>(creatorContext),
+        for (var pack in state.packs) {
+          packTiles.add(
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              clipBehavior: Clip.antiAlias,
+              elevation: 8,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => BlocProvider(
+                        create: (creatorContext) => PackDetailsBloc(
+                          pack,
+                          RepositoryProvider.of<AssetsRepository>(
+                              creatorContext),
+                        ),
+                        child: const PackDetailsScreen(),
+                      ),
                     ),
-                    child: const PackDetailsScreen(),
-                  ),
+                  );
+                },
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Skeleton.keep(
+                        keep: state.packsLoaded[pack]!,
+                        child: Text(pack.name,
+                            style: Theme.of(context).textTheme.bodyLarge),
+                      ),
+                      subtitle: Text("${pack.assets.length} stickers"),
+                    ),
+                    Skeleton.keep(
+                      keep: state.packsLoaded[pack]!,
+                      child: StickerPackPreviewWidget(
+                        pack: pack,
+                      ),
+                    ),
+                  ],
                 ),
-              );
-            },
-            child: Column(
-              children: [
-                ListTile(
-                  title: Skeleton.keep(
-                    keep: widget.packsLoaded[pack]!,
-                    child: Text(pack.name,
-                        style: Theme.of(context).textTheme.bodyLarge),
-                  ),
-                  subtitle: Text("${pack.assets.length} stickers"),
-                ),
-                Skeleton.keep(
-                  keep: widget.packsLoaded[pack]!,
-                  child: StickerPackPreviewWidget(
-                    pack: pack,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    }
+          );
+        }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        BlocProvider.of<HomePageBloc>(context).add(
-          HomePageRefreshed(),
+        return RefreshIndicator(
+          onRefresh: () async {
+            BlocProvider.of<HomePageBloc>(context).add(
+              HomePageRefreshed(),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
+            child: state.packs.isEmpty
+                ? const CustomScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    slivers: [
+                        SliverFillRemaining(
+                          child: EmptyWidget(
+                              title: "No stickers yet",
+                              icon: Icons.image_not_supported,
+                              description:
+                                  "You don't have any stickers yet. Get started by creating a new pack or importing from discord!"),
+                        ),
+                      ])
+                : ListView.builder(
+                    primary: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    key: UniqueKey(),
+                    itemCount: state.packs.length,
+                    itemBuilder: (context, index) {
+                      return packTiles[index];
+                    },
+                  ),
+          ),
         );
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
-        child: widget.packs.isEmpty
-            ? const CustomScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                slivers: [
-                    SliverFillRemaining(
-                      child: EmptyWidget(
-                          title: "No stickers yet",
-                          icon: Icons.image_not_supported,
-                          description:
-                              "You don't have any stickers yet. Get started by creating a new pack or importing from discord!"),
-                    ),
-                  ])
-            : ListView.builder(
-                primary: false,
-                physics: const AlwaysScrollableScrollPhysics(),
-                key: UniqueKey(),
-                itemCount: widget.packs.length,
-                itemBuilder: (context, index) {
-                  return expansionTiles[index];
-                },
-              ),
-      ),
     );
   }
 }
