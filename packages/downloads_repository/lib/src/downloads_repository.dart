@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:assets_repository/assets_repository.dart';
-import 'package:fast_image_resizer/fast_image_resizer.dart';
 import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter_full_gpl/ffprobe_kit.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:dio/dio.dart';
 
 class DownloadsRepository {
