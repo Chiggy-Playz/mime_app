@@ -97,8 +97,43 @@ class AssetsRepository {
 
       // Return pack
       return pack;
+    } on DatabaseException {
+      throw DatabaseException();
     } catch (e) {
       throw Exception("An error occurred while creating the pack");
+    }
+  }
+
+  Future<Pack> updatePack(
+      {required Pack pack,
+      required String name,
+      required String iconPath}) async {
+    try {
+      try {
+        await (supabase.from("packs").update({
+          "name": name,
+        }).eq("pack_id", pack.packId));
+      } catch (e) {
+        throw DatabaseException();
+      }
+
+      // Update local packs cache by replacing the old pack with the new one
+      var newPack = Pack(
+        packId: pack.packId,
+        identifier: pack.identifier,
+        name: name,
+        userId: pack.userId,
+        assets: pack.assets,
+      );
+      packs.removeWhere((p) => p.packId == pack.packId);
+      packs.add(newPack);
+      _packsController.add(List<Pack>.from(packs));
+
+      return newPack;
+    } on DatabaseException {
+      throw DatabaseException();
+    } catch (e) {
+      throw Exception("An error occurred while updating the pack");
     }
   }
 

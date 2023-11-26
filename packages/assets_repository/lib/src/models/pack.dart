@@ -32,7 +32,7 @@ class RawPack extends Equatable {
   bool get isUnassigned => packId == 0;
 
   @override
-  List<Object?> get props => [packId];
+  List<Object?> get props => [packId, name];
 }
 
 class Pack extends RawPack {

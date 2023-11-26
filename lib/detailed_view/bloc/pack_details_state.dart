@@ -27,8 +27,7 @@ final class AssetTransferSuccess extends PackDetailsState {
 }
 
 final class AssetDeleteSuccess extends PackDetailsState {
-  const AssetDeleteSuccess(
-      Pack pack, Set<int> selectedAssets, bool selectMode)
+  const AssetDeleteSuccess(Pack pack, Set<int> selectedAssets, bool selectMode)
       : super(pack, selectedAssets, selectMode);
 }
 

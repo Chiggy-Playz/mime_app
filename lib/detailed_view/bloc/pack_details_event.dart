@@ -43,7 +43,6 @@ class TransferAssets extends PackDetailsEvent {
   List<Object> get props => [destinationPacks, assets, copy];
 }
 
-
 class DeleteAssets extends PackDetailsEvent {
   const DeleteAssets(this.assets);
 
@@ -54,3 +53,10 @@ class DeleteAssets extends PackDetailsEvent {
 }
 
 class SyncStickers extends PackDetailsEvent {}
+
+class UpdatePack extends PackDetailsEvent {
+
+  const UpdatePack(this.newName);
+
+  final String newName;
+}

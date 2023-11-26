@@ -45,13 +45,16 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
         if (!pack.isUnassigned) {
           actions = [
             IconButton(
-              onPressed: () {},
+              onPressed: onEditPack,
+              icon: const Icon(Icons.edit),
+            ),
+            IconButton(
+              onPressed: onDeletePack,
               icon: const Icon(Icons.delete),
             ),
             IconButton(
-              onPressed: () => context
-                  .read<PackDetailsBloc>()
-                  .add(SyncStickers()),
+              onPressed: () =>
+                  context.read<PackDetailsBloc>().add(SyncStickers()),
               icon: const Icon(Icons.sync),
             ),
           ];
@@ -106,4 +109,59 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
       },
     );
   }
+
+  Future<void> onEditPack() async {
+    // Show a dialog to edit pack name
+    // If name is changed, dispatch an event to update the pack name
+    // If name is not changed, do nothing
+    var bloc = context.read<PackDetailsBloc>();
+    var controller = TextEditingController(text: bloc.pack.name);
+    var formKey = GlobalKey<FormState>();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Edit Pack Name"),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: controller,
+            validator: (value) {
+              if (value?.trim().isEmpty ?? true) {
+                return "Pack name cannot be empty";
+              }
+              if (value!.trim() == bloc.pack.name) {
+                return "Pack name cannot be same";
+              }
+              return null;
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              controller.text = bloc.pack.name;
+              Navigator.of(context).pop();
+            },
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
+
+    // Only update if there's a difference
+    if (controller.text.trim() != bloc.pack.name) {
+      bloc.add(UpdatePack(controller.text.trim()));
+    }
+  }
+
+  Future<void> onDeletePack() async {}
 }

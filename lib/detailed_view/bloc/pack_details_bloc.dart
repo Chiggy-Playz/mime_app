@@ -32,6 +32,7 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
     on<TransferAssets>(onTransferAssets);
     on<DeleteAssets>(onDeleteAssets);
     on<SyncStickers>(onSyncStickers);
+    on<UpdatePack>(onUpdatePack);
 
     _packsSubscription = _assetsRepository.packsStream.listen((newPacks) {
       if (pack.isUnassigned) return;
@@ -47,7 +48,7 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
 
   void onRefresh(PackDetailsRefresh event, Emitter<PackDetailsState> emit) {
     pack = event.pack;
-    emit(PackDetailsState(event.pack, Set.from(selectedAssets), selectMode));
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
   }
 
   void onAssetSelected(AssetSelected event, Emitter<PackDetailsState> emit) {
@@ -141,7 +142,6 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
 
   Future<void> onSyncStickers(
       SyncStickers event, Emitter<PackDetailsState> emit) async {
-    emit(PackDetailsLoading());
     try {
       final WhatsappStickersHandler _whatsappStickersHandler =
           WhatsappStickersHandler();
@@ -176,6 +176,21 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
       // Figure out animated stickers
       // Need to 512x512, webp, minimum 8ms frame duration
       print(e);
+      emit(PackDetailsError());
+      return;
+    }
+    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
+  }
+
+  Future<void> onUpdatePack(
+      UpdatePack event, Emitter<PackDetailsState> emit) async {
+    try {
+      await _assetsRepository.updatePack(
+        pack: pack,
+        name: event.newName,
+        iconPath: "",
+      );
+    } catch (e) {
       emit(PackDetailsError());
       return;
     }
