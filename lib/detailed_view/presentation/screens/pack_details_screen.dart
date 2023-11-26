@@ -35,6 +35,8 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
                   "Cannot add more than 30 stickers to a pack ${state.errorPack.name}");
         } else if (state is PackDetailsError) {
           context.showErrorSnackBar(message: "Something went wrong");
+        } else if (state is PackDeleted) {
+          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
@@ -163,5 +165,31 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
     }
   }
 
-  Future<void> onDeletePack() async {}
+  Future<void> onDeletePack() async {
+    // Show a dialog to confirm deletion
+    // If confirmed, dispatch an event to delete the pack
+    // If not confirmed, do nothing
+    var bloc = context.read<PackDetailsBloc>();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Pack"),
+        content: const Text("Are you sure you want to delete this pack?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              bloc.add(DeletePack());
+            },
+            child: const Text("Delete"),
+          ),
+        ],
+      ),
+    );
+  }
 }

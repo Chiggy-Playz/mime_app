@@ -60,3 +60,5 @@ class UpdatePack extends PackDetailsEvent {
 
   final String newName;
 }
+
+class DeletePack extends PackDetailsEvent {}

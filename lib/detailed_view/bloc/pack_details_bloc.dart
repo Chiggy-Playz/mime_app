@@ -33,15 +33,18 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
     on<DeleteAssets>(onDeleteAssets);
     on<SyncStickers>(onSyncStickers);
     on<UpdatePack>(onUpdatePack);
+    on<DeletePack>(onDeletePack);
 
     _packsSubscription = _assetsRepository.packsStream.listen((newPacks) {
-      if (pack.isUnassigned) return;
+      var newPack = newPacks.firstWhere(
+        (element) => element.packId == pack.packId,
+        orElse: () => Pack.empty(),
+      );
+      if (newPack == Pack.empty()) {
+        return;
+      }
       add(
-        PackDetailsRefresh(
-          newPacks.firstWhere(
-            (element) => element.packId == pack.packId,
-          ),
-        ),
+        PackDetailsRefresh(newPack),
       );
     });
   }
@@ -195,6 +198,17 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
       return;
     }
     emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
+  }
+
+  Future<void> onDeletePack(
+      DeletePack event, Emitter<PackDetailsState> emit) async {
+    try {
+      _assetsRepository.deletePack(pack: pack);
+    } catch (e) {
+      emit(PackDetailsError());
+      return;
+    }
+    emit(PackDeleted());
   }
 
   @override

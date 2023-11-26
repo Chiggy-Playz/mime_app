@@ -137,6 +137,19 @@ class AssetsRepository {
     }
   }
 
+  Future<void> deletePack({required Pack pack}) async {
+    // Delete from database
+    try {
+      await (supabase.from("packs").delete().eq("pack_id", pack.packId));
+    } catch (e) {
+      throw DatabaseException();
+    }
+
+    // Update local packs cache
+    packs.removeWhere((p) => p.packId == pack.packId);
+    _packsController.add(List<Pack>.from(packs));
+  }
+
   Future<void> transferAssets(
       {required List<Asset> assets,
       required Pack sourcePack,

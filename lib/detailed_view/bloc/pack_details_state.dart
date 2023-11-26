@@ -40,6 +40,10 @@ final class PackDetailsLoading extends PackDetailsNoBuild {
   PackDetailsLoading();
 }
 
+final class PackDeleted extends PackDetailsNoBuild {
+  PackDeleted();
+}
+
 // Errors
 final class PackDetailsError extends PackDetailsNoBuild {}
 
