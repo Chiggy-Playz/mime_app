@@ -44,6 +44,10 @@ final class PackDeleted extends PackDetailsNoBuild {
   PackDeleted();
 }
 
+final class PackSynced extends PackDetailsNoBuild {
+  PackSynced();
+}
+
 // Errors
 final class PackDetailsError extends PackDetailsNoBuild {}
 
@@ -56,3 +60,5 @@ final class PackAssetLimitExceededError extends PackDetailsError {
   PackAssetLimitExceededError(this.errorPack);
   final Pack errorPack;
 }
+
+final class PackAssetCountLowError extends PackDetailsError {}

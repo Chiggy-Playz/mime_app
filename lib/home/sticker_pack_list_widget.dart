@@ -7,6 +7,7 @@ import 'package:mime_app/detailed_view/presentation/screens/pack_details_screen.
 import 'package:mime_app/home/sticker_pack_preview_widget.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:user_repository/user_repository.dart';
 
 import 'bloc/home_page_bloc.dart';
 
@@ -46,6 +47,7 @@ class StickerPackListWidgetState extends State<StickerPackListWidget> {
                           pack,
                           RepositoryProvider.of<AssetsRepository>(
                               creatorContext),
+                          RepositoryProvider.of<UserRepository>(creatorContext),
                         ),
                         child: const PackDetailsScreen(),
                       ),

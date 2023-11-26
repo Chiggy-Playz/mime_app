@@ -20,7 +20,6 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
       listener: (context, state) {
         if (state is PackDetailsLoading) {
           // TODO: Show loading modal/page
-          // Navigator.of(context).push(LoadingPage.route(),);
         } else if (state is AssetTransferSuccess) {
           context.showSnackBar(
               message:
@@ -33,10 +32,15 @@ class _PackDetailsScreenState extends State<PackDetailsScreen> {
           context.showErrorSnackBar(
               message:
                   "Cannot add more than 30 stickers to a pack ${state.errorPack.name}");
-        } else if (state is PackDetailsError) {
-          context.showErrorSnackBar(message: "Something went wrong");
         } else if (state is PackDeleted) {
           Navigator.of(context).pop();
+        } else if (state is PackSynced) {
+          context.showSnackBar(message: "Stickers synced successfully");
+        } else if (state is PackAssetCountLowError) {
+          context.showErrorSnackBar(
+              message: "Add at least 3 stickers to a pack before syncing");
+        } else if (state is PackDetailsError) {
+          context.showErrorSnackBar(message: "Something went wrong");
         }
       },
       builder: (context, state) {

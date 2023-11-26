@@ -6,6 +6,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:user_repository/user_repository.dart';
+import 'package:whatsapp_stickers_handler/exceptions.dart';
 import 'package:whatsapp_stickers_handler/whatsapp_stickers_handler.dart';
 import 'package:fast_image_resizer/fast_image_resizer.dart';
 
@@ -21,8 +23,9 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
   StreamSubscription<List<Pack>>? _packsSubscription;
 
   final AssetsRepository _assetsRepository;
+  final UserRepository _userRepository;
 
-  PackDetailsBloc(this.pack, this._assetsRepository)
+  PackDetailsBloc(this.pack, this._assetsRepository, this._userRepository)
       : super(PackDetailsInitial(pack)) {
     on<PackDetailsRefresh>(onRefresh);
     on<AssetSelected>(onAssetSelected);
@@ -145,29 +148,35 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
 
   Future<void> onSyncStickers(
       SyncStickers event, Emitter<PackDetailsState> emit) async {
+    if (pack.assetCount < 3) {
+      emit(PackAssetCountLowError());
+      return;
+    }
+
     try {
-      final WhatsappStickersHandler _whatsappStickersHandler =
+      final WhatsappStickersHandler whatsappStickersHandler =
           WhatsappStickersHandler();
+
       final dir = await getApplicationCacheDirectory();
 
+      // Icon handling
       Map<String, List<String>> stickers = <String, List<String>>{};
       final rawImage = await rootBundle.load('assets/icons/icon.png');
       final bytes = await resizeImage(Uint8List.view(rawImage.buffer),
           width: 96, height: 96);
-
-      // Write bytes to file
       final trayIcon = File('${dir.path}/icon.png');
       await trayIcon.writeAsBytes(bytes!.buffer.asInt8List(), flush: true);
 
+      // Add all assets to sticker pack
       for (var asset in pack.assets) {
         stickers[WhatsappStickerImageHandler.fromFile(asset.file(dir).path)
             .path] = ["🤓"];
       }
 
-      await _whatsappStickersHandler.addStickerPack(
+      await whatsappStickersHandler.addStickerPack(
         pack.identifier,
         pack.name,
-        "Chiggy",
+        _userRepository.user!.username,
         WhatsappStickerImageHandler.fromFile(trayIcon.path).path,
         "",
         "",
@@ -175,14 +184,16 @@ class PackDetailsBloc extends Bloc<PackDetailsEvent, PackDetailsState> {
         pack.isAnimated,
         stickers,
       );
-    } catch (e) {
-      // Figure out animated stickers
-      // Need to 512x512, webp, minimum 8ms frame duration
-      print(e);
+    } on WhatsappStickersException catch (e) {
+      // Error is raised when the pack is already added, even though assets updated
+      if (e.cause == "already_added") {
+        emit(PackSynced());
+        return;
+      }
       emit(PackDetailsError());
       return;
     }
-    emit(PackDetailsState(pack, Set.from(selectedAssets), selectMode));
+    emit(PackSynced());
   }
 
   Future<void> onUpdatePack(
